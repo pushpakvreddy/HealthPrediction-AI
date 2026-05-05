@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+.pytest_cache/
+*.pkl
+*.joblib
+saved_models/
+uploads/
+
+# Node
+node_modules/
+dist/
+.DS_Store
+.env.local
+
+# IDE
+.vscode/
+.idea/
