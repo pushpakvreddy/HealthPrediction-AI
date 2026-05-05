@@ -20,17 +20,16 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd backend
         python -m pip install --upgrade pip
-        pip install pylint pytest
-        pip install -r requirements.txt
+        pip install pylint pytest httpx fastapi sqlalchemy pydantic-settings psycopg[binary]
+        cd backend && pip install -r requirements.txt
 
     - name: Analysing the code with pylint
       run: |
-        cd backend
-        pylint $(git ls-files '*.py') --disable=C,R --exit-zero
+        export PYTHONPATH=$PYTHONPATH:$(pwd)/backend
+        pylint backend/app --disable=C,R --exit-zero
 
     - name: Test with pytest
       run: |
-        cd backend
-        python -m pytest -v tests/
+        export PYTHONPATH=$PYTHONPATH:$(pwd)/backend
+        python -m pytest -v backend/tests/
