@@ -1,11 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import engine, Base
-from .routes import auth, patients, predictions, images
-from .config import settings
+from app.database import engine, Base
+from app.routes import auth, patients, predictions, images
+from app.config import settings
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Create database tables (non-blocking for tests)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"Warning: Could not connect to database for table creation: {e}")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

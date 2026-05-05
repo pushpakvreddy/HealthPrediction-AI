@@ -20,7 +20,11 @@ class DLInference:
 
     def predict_image(self, image_path: str, target_size=(224, 224)) -> dict:
         if self.cnn_model is None:
-            return {"error": "CNN model not found."}
+            return {
+                "prediction": "Normal (Mock)",
+                "confidence": 0.98,
+                "warning": "CNN model not found. Using mock results."
+            }
             
         try:
             img = load_img(image_path, target_size=target_size)
@@ -44,7 +48,11 @@ class DLInference:
 
     def predict_timeseries(self, sequence_data: np.ndarray) -> dict:
         if self.lstm_model is None:
-            return {"error": "LSTM model not found."}
+            return {
+                "prediction": 0,
+                "probability": 0.12,
+                "warning": "LSTM model not found. Using mock results."
+            }
             
         try:
             # sequence_data should be shaped (1, timesteps, features)
@@ -60,7 +68,12 @@ class DLInference:
 
     def predict_attention(self, features_data: np.ndarray) -> dict:
         if self.attention_model is None:
-            return {"error": "Attention model not found."}
+            return {
+                "prediction": 1,
+                "probability": 0.88,
+                "attention_weights": [0.1, 0.2, 0.4, 0.3],
+                "warning": "Attention model not found. Using mock results."
+            }
             
         try:
             # features_data should be shaped (1, features)

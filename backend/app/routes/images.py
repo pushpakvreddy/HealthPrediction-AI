@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 import os
 import shutil
-from ..database import get_db
-from ..models import models
-from ..schemas import schemas
-from ..config import settings
+from app.database import get_db
+from app.models import models
+from app.schemas import schemas
+from app.config import settings
 
 router = APIRouter(
     prefix="/images",

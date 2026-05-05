@@ -4,13 +4,13 @@ from typing import List
 import json
 import pandas as pd
 import numpy as np
-from ..database import get_db
-from ..models import models
-from ..schemas import schemas
-from ...inference_ml import MLInference
-from ...inference_dl import DLInference
-from ...qml_inference import QMLInference
-from ..config import settings
+from app.database import get_db
+from app.models import models
+from app.schemas import schemas
+from inference_ml import MLInference
+from inference_dl import DLInference
+from qml_inference import QMLInference
+from app.config import settings
 
 router = APIRouter(
     prefix="/predict",

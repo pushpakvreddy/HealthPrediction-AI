@@ -1,0 +1,156 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.13.13, pytest-9.0.3, pluggy-1.6.0
+rootdir: /Users/pushpakvreddy/Desktop/MLOPS_CIE3/backend
+plugins: anyio-4.13.0
+collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+______________________ ERROR collecting tests/test_api.py ______________________
+
+    import pytest
+    from fastapi.testclient import TestClient
+>   from app.main import app
+
+tests/test_api.py:3: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from fastapi import FastAPI
+    from fastapi.middleware.cors import CORSMiddleware
+    from app.database import engine, Base
+>   from app.routes import auth, patients, predictions, images
+
+app/main.py:4: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from fastapi import APIRouter, Depends, HTTPException
+    from sqlalchemy.orm import Session
+    from typing import List
+    import json
+    import pandas as pd
+    import numpy as np
+    from app.database import get_db
+    from app.models import models
+    from app.schemas import schemas
+    from inference_ml import MLInference
+    from inference_dl import DLInference
+    from qml_inference import QMLInference
+    from app.config import settings
+    
+    router = APIRouter(
+        prefix="/predict",
+        tags=["predictions"]
+    )
+    
+    # Initialize inference engines (assuming models are in settings.MODEL_DIR)
+>   ml_engine = MLInference(settings.MODEL_DIR)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app/routes/predictions.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <inference_ml.MLInference object at 0x123875400>
+models_dir = '/Users/pushpakvreddy/Desktop/MLOPS_CIE3/backend/saved_models'
+
+    def __init__(self, models_dir: str):
+        self.models_dir = models_dir
+>       self.preprocessor = DataPreprocessor.load(os.path.join(models_dir, 'preprocessor.pkl'))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+inference_ml.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = <class 'data_preprocessing.DataPreprocessor'>
+filepath = '/Users/pushpakvreddy/Desktop/MLOPS_CIE3/backend/saved_models/preprocessor.pkl'
+
+    @classmethod
+    def load(cls, filepath: str):
+        """Loads a preprocessor from disk."""
+>       return joblib.load(filepath)
+               ^^^^^^^^^^^^^^^^^^^^^
+
+data_preprocessing.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+filename = '/Users/pushpakvreddy/Desktop/MLOPS_CIE3/backend/saved_models/preprocessor.pkl'
+mmap_mode = None, ensure_native_byte_order = True
+
+    def load(filename, mmap_mode=None, ensure_native_byte_order="auto"):
+        """Reconstruct a Python object from a file persisted with joblib.dump.
+    
+        Read more in the :ref:`User Guide <persistence>`.
+    
+        WARNING: joblib.load relies on the pickle module and can therefore
+        execute arbitrary Python code. It should therefore never be used
+        to load files from untrusted sources.
+    
+        Parameters
+        ----------
+        filename: str, pathlib.Path, or file object.
+            The file object or path of the file from which to load the object
+        mmap_mode: {None, 'r+', 'r', 'w+', 'c'}, optional
+            If not None, the arrays are memory-mapped from the disk. This
+            mode has no effect for compressed files. Note that in this
+            case the reconstructed object might no longer match exactly
+            the originally pickled object.
+        ensure_native_byte_order: bool, or 'auto', default=='auto'
+            If True, ensures that the byte order of the loaded arrays matches the
+            native byte ordering (or _endianness_) of the host system. This is not
+            compatible with memory-mapped arrays and using non-null `mmap_mode`
+            parameter at the same time will raise an error. The default 'auto'
+            parameter is equivalent to True if `mmap_mode` is None, else False.
+    
+        Returns
+        -------
+        result: any Python object
+            The object stored in the file.
+    
+        See Also
+        --------
+        joblib.dump : function to save an object
+    
+        Notes
+        -----
+    
+        This function can load numpy array files saved separately during the
+        dump. If the mmap_mode argument is given, it is passed to np.load and
+        arrays are loaded as memmaps. As a consequence, the reconstructed
+        object might not match the original pickled object. Note that if the
+        file was saved with compression, the arrays cannot be memmapped.
+        """
+        if ensure_native_byte_order == "auto":
+            ensure_native_byte_order = mmap_mode is None
+    
+        if ensure_native_byte_order and mmap_mode is not None:
+            raise ValueError(
+                "Native byte ordering can only be enforced if 'mmap_mode' parameter "
+                f"is set to None, but got 'mmap_mode={mmap_mode}' instead."
+            )
+    
+        if Path is not None and isinstance(filename, Path):
+            filename = str(filename)
+    
+        if hasattr(filename, "read"):
+            fobj = filename
+            filename = getattr(fobj, "name", "")
+            with _validate_fileobject_and_memmap(fobj, filename, mmap_mode) as (fobj, _):
+                obj = _unpickle(fobj, ensure_native_byte_order=ensure_native_byte_order)
+        else:
+>           with open(filename, "rb") as f:
+                 ^^^^^^^^^^^^^^^^^^^^
+E           FileNotFoundError: [Errno 2] No such file or directory: '/Users/pushpakvreddy/Desktop/MLOPS_CIE3/backend/saved_models/preprocessor.pkl'
+
+venv/lib/python3.13/site-packages/joblib/numpy_pickle.py:735: FileNotFoundError
+=============================== warnings summary ===============================
+app/config.py:5
+  /Users/pushpakvreddy/Desktop/MLOPS_CIE3/backend/app/config.py:5: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class Settings(BaseSettings):
+
+app/database.py:13
+  /Users/pushpakvreddy/Desktop/MLOPS_CIE3/backend/app/database.py:13: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base = declarative_base()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/test_api.py - FileNotFoundError: [Errno 2] No such file or direct...
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+======================== 2 warnings, 1 error in 27.17s =========================
